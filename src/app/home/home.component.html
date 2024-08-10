@@ -1,0 +1,47 @@
+<div class="home-container">
+  <mat-toolbar color="primary">
+    <span>Blog Application</span>
+    <span class="spacer"></span>
+    <button mat-button routerLink="/profile">
+      <mat-icon>account_circle</mat-icon> Profile
+    </button>
+
+    <button mat-button (click)="logout()">
+      <mat-icon>logout</mat-icon> Logout
+    </button>
+  </mat-toolbar>
+
+  <!-- New Post Form -->
+  <div class="new-post-form">
+    <mat-card>
+      <form (ngSubmit)="onSubmit()">
+        <mat-form-field class="full-width">
+          <mat-label>Title</mat-label>
+          <input matInput [(ngModel)]="newPost.title" name="title" required />
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-label>Content</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="newPost.content"
+            name="content"
+            rows="4"
+            required
+          ></textarea>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit">
+          Add Post
+        </button>
+      </form>
+    </mat-card>
+  </div>
+
+  <!-- Posts Section -->
+  <div class="posts-container">
+    <div class="post-wrapper">
+      <app-post *ngFor="let post of posts" [post]="post"></app-post>
+    </div>
+  </div>
+</div>

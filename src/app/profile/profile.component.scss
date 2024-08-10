@@ -1,0 +1,58 @@
+.nav-bar {
+  background-color: #2c2c2e;
+  color: #e4e4e6;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.profile-card {
+  background-color: #2c2c2e;
+  color: #e4e4e6;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 500px;
+  margin: 40px auto;
+}
+
+mat-card-title {
+  color: #e4e4e6;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+mat-form-field {
+  background-color: #333;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 15px;
+
+  mat-label {
+    color: #aaa;
+  }
+
+  input {
+    color: #e4e4e6;
+  }
+
+  mat-hint {
+    color: #777;
+  }
+}
+
+.submit-btn {
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px;
+  width: 100%;
+  padding: 10px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}

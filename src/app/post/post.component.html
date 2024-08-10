@@ -1,0 +1,91 @@
+<mat-card class="post-card">
+  <mat-card-header>
+    <div>
+      <mat-card-title>{{ post?.user?.name }}</mat-card-title>
+      <mat-card-subtitle>
+        Shared {{ post?.date | date : "short" }}
+      </mat-card-subtitle>
+    </div>
+  </mat-card-header>
+
+  <mat-card-content>
+    <p>{{ post?.content }}</p>
+
+    <button mat-button (click)="toggleComments()" class="toggle-comments-btn">
+      {{ showComments ? "Hide Comments" : "Show Comments" }}
+    </button>
+
+    <div *ngIf="showComments" class="fancy-divider"></div>
+
+    <div class="comments-section" *ngIf="showComments">
+      <div *ngFor="let comment of post.comments" class="comment">
+        <div class="comment-content">
+          <div class="comment-user-avatar">
+            <mat-icon>person</mat-icon>
+          </div>
+          <div class="comment-body">
+            <strong>{{ comment.user.name }}</strong>
+            <p>{{ comment?.content }}</p>
+            <span class="comment-date">{{
+              comment?.date | date : "short" : "shortTime"
+            }}</span>
+            <button
+              mat-button
+              class="reply-btn"
+              (click)="toggleReplies(comment._id)"
+            >
+              {{ comment.showReplies ? "Hide Replies" : "Show Replies" }}
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="comment.showReplies" class="fancy-divider"></div>
+
+        <div *ngIf="comment.showReplies" class="replies-section">
+          <div *ngFor="let reply of comment.replies" class="reply">
+            <div class="reply-content">
+              <div class="reply-user-avatar">
+                <mat-icon>person</mat-icon>
+              </div>
+              <div class="reply-body">
+                <strong>{{ reply.user.name }}</strong>
+                <p>{{ reply?.content }}</p>
+                <span class="reply-date">{{
+                  reply?.date | date : "short" : "shortTime"
+                }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="new-reply-section">
+            <input
+              matInput
+              placeholder="Write a reply..."
+              [(ngModel)]="newReplies[comment._id]"
+              [disabled]="isSubmittingReply[comment._id]"
+            />
+            <button
+              mat-button
+              color="primary"
+              (click)="onSubmitReply(comment._id)"
+            >
+              Reply
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="new-comment-section">
+      <input
+        matInput
+        placeholder="Write a comment..."
+        [(ngModel)]="newComment"
+        [disabled]="isSubmittingComment"
+      />
+      <button mat-button color="primary" (click)="onSubmitComment()">
+        Submit
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

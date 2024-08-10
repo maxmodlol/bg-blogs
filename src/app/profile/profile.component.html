@@ -1,0 +1,70 @@
+<mat-toolbar color="primary" class="nav-bar">
+  <button mat-button routerLink="/home">
+    <mat-icon>home</mat-icon>
+    Home
+  </button>
+  <span class="spacer"></span>
+  <button mat-button (click)="logout()">
+    <mat-icon>logout</mat-icon>
+    Logout
+  </button>
+</mat-toolbar>
+
+<mat-card class="profile-card">
+  <mat-card-header>
+    <mat-card-title>{{
+      isEditMode ? "Update Profile" : "Your Profile"
+    }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <ng-container *ngIf="!isEditMode; else editMode">
+      <p><strong>Name:</strong> {{ user.name }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <button mat-raised-button color="accent" (click)="toggleEditMode()">
+        Edit Profile
+      </button>
+    </ng-container>
+    <ng-template #editMode>
+      <form (ngSubmit)="onSubmit()">
+        <mat-form-field class="full-width">
+          <mat-label>Name</mat-label>
+          <input matInput [(ngModel)]="user.name" name="name" required />
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            [(ngModel)]="user.email"
+            name="email"
+            required
+            type="email"
+          />
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            [(ngModel)]="user.password"
+            name="password"
+            type="password"
+          />
+          <mat-hint>Leave blank to keep current password</mat-hint>
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          color="accent"
+          type="submit"
+          class="submit-btn"
+        >
+          Update
+        </button>
+        <button mat-button (click)="toggleEditMode()" color="warn">
+          Cancel
+        </button>
+      </form>
+    </ng-template>
+  </mat-card-content>
+</mat-card>
