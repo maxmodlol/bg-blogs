@@ -1,16 +1,37 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
+interface UserResponse {
+  success: boolean;
+  message: string;
+  data: any[];
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private apiUrl = 'http://localhost:5000/api/v1/auth';
+  private apiUrl = 'http://localhost:5000/api/v1/users';
 
   constructor(private http: HttpClient) {}
 
-  getUserProfile(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/profile`);
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+  }
+
+  getUsers(): Observable<UserResponse> {
+    return this.http.get<UserResponse>(this.apiUrl, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
+  deleteUser(userId: string): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/${userId}`, {
+      headers: this.getAuthHeaders(),
+    });
   }
 }

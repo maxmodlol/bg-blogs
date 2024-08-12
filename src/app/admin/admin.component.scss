@@ -1,0 +1,44 @@
+.admin-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  color: #333;
+
+  h2 {
+    margin-bottom: 20px;
+    color: #007bff;
+  }
+
+  .table-container {
+    margin-bottom: 40px;
+
+    h3 {
+      margin-bottom: 15px;
+      color: #17a2b8;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+
+      th,
+      td {
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        text-align: left;
+      }
+
+      th {
+        background-color: #007bff;
+        color: #ffffff;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      button {
+        margin: 5px;
+      }
+    }
+  }
+}

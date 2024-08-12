@@ -66,4 +66,39 @@ export class PostService {
       }
     );
   }
+
+  addReaction(
+    target: string,
+    postId: string,
+    type: string,
+    itemId?: string
+  ): Observable<any> {
+    let url = `${this.apiUrl}/${postId}/reactions`;
+    if (target === 'comment') {
+      url = `${this.apiUrl}/${postId}/comments/${itemId}/reactions`;
+    } else if (target === 'reply') {
+      url = `${this.apiUrl}/${postId}/comments/${itemId}/reactions`;
+    }
+
+    return this.http.post<any>(
+      url,
+      { type },
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  removeReaction(
+    target: string,
+    postId: string,
+    reactionId: string
+  ): Observable<any> {
+    let url = `${this.apiUrl}/${postId}/reactions/${reactionId}`;
+    if (target === 'comment') {
+      url = `${this.apiUrl}/${postId}/comments/${reactionId}/reactions/${reactionId}`;
+    } else if (target === 'reply') {
+      url = `${this.apiUrl}/${postId}/comments/${reactionId}/reactions/${reactionId}`;
+    }
+
+    return this.http.delete<any>(url, { headers: this.getAuthHeaders() });
+  }
 }

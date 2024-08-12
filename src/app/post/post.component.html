@@ -11,13 +11,48 @@
   <mat-card-content>
     <p>{{ post?.content }}</p>
 
+    <!-- Reaction Summary -->
+    <div class="reaction-summary" (mouseleave)="hideReactionPicker()">
+      <button
+        mat-icon-button
+        (mouseenter)="showReactionPicker()"
+        class="reaction-button"
+      >
+        <img
+          class="reaction-icon"
+          [src]="'assets/icons/' + getTopReaction() + '.png'"
+          alt="reaction"
+        />
+        <span *ngIf="getTotalReactions() > 0" class="reaction-count">
+          {{ getTotalReactions() }}
+        </span>
+      </button>
+
+      <!-- Reaction Picker -->
+      <div
+        class="reaction-picker"
+        [ngClass]="{ visible: isReactionPickerVisible }"
+      >
+        <button
+          *ngFor="let reaction of reactionTypes"
+          (click)="toggleReaction('post', post._id, reaction)"
+        >
+          <img
+            class="reaction-icon"
+            [src]="'assets/icons/' + reaction + '.png'"
+            alt="{{ reaction }}"
+          />
+        </button>
+      </div>
+    </div>
+
     <button mat-button (click)="toggleComments()" class="toggle-comments-btn">
+      <mat-icon>{{ showComments ? "expand_less" : "expand_more" }}</mat-icon>
       {{ showComments ? "Hide Comments" : "Show Comments" }}
     </button>
 
-    <div *ngIf="showComments" class="fancy-divider"></div>
-
-    <div class="comments-section" *ngIf="showComments">
+    <!-- Comment Section -->
+    <div *ngIf="showComments" class="comments-section">
       <div *ngFor="let comment of post.comments" class="comment">
         <div class="comment-content">
           <div class="comment-user-avatar">
@@ -29,11 +64,57 @@
             <span class="comment-date">{{
               comment?.date | date : "short" : "shortTime"
             }}</span>
+
+            <!-- Comment Reaction Summary -->
+            <div
+              class="reaction-summary comment-reaction-summary"
+              (mouseleave)="hideReactionPicker(comment)"
+            >
+              <button
+                mat-icon-button
+                (mouseenter)="showReactionPicker(comment)"
+                class="reaction-button"
+              >
+                <img
+                  class="reaction-icon"
+                  [src]="'assets/icons/' + getTopReaction(comment) + '.png'"
+                  alt="reaction"
+                />
+                <span
+                  *ngIf="getTotalReactions(comment) > 0"
+                  class="reaction-count"
+                >
+                  {{ getTotalReactions(comment) }}
+                </span>
+              </button>
+
+              <div
+                class="reaction-picker"
+                [ngClass]="{ visible: comment.isReactionPickerVisible }"
+              >
+                <button
+                  *ngFor="let reaction of reactionTypes"
+                  (click)="
+                    toggleReaction('comment', post._id, reaction, comment._id)
+                  "
+                >
+                  <img
+                    class="reaction-icon"
+                    [src]="'assets/icons/' + reaction + '.png'"
+                    alt="{{ reaction }}"
+                  />
+                </button>
+              </div>
+            </div>
+
             <button
               mat-button
               class="reply-btn"
               (click)="toggleReplies(comment._id)"
             >
+              <mat-icon>{{
+                comment.showReplies ? "expand_less" : "expand_more"
+              }}</mat-icon>
               {{ comment.showReplies ? "Hide Replies" : "Show Replies" }}
             </button>
           </div>
@@ -53,6 +134,54 @@
                 <span class="reply-date">{{
                   reply?.date | date : "short" : "shortTime"
                 }}</span>
+
+                <!-- Reply Reaction Summary -->
+                <div
+                  class="reaction-summary reply-reaction-summary"
+                  (mouseleave)="hideReactionPicker(reply)"
+                >
+                  <button
+                    mat-icon-button
+                    (mouseenter)="showReactionPicker(reply)"
+                    class="reaction-button"
+                  >
+                    <img
+                      class="reaction-icon"
+                      [src]="'assets/icons/' + getTopReaction(reply) + '.png'"
+                      alt="reaction"
+                    />
+                    <span
+                      *ngIf="getTotalReactions(reply) > 0"
+                      class="reaction-count"
+                    >
+                      {{ getTotalReactions(reply) }}
+                    </span>
+                  </button>
+
+                  <div
+                    class="reaction-picker"
+                    [ngClass]="{ visible: reply.isReactionPickerVisible }"
+                  >
+                    <button
+                      *ngFor="let reaction of reactionTypes"
+                      (click)="
+                        toggleReaction(
+                          'reply',
+                          post._id,
+                          reaction,
+                          comment._id,
+                          reply._id
+                        )
+                      "
+                    >
+                      <img
+                        class="reaction-icon"
+                        [src]="'assets/icons/' + reaction + '.png'"
+                        alt="{{ reaction }}"
+                      />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

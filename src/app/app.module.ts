@@ -15,9 +15,10 @@ import { AuthModule } from './auth/auth.module';
 import { HomeModule } from './home/home.module';
 import { ProfileModule } from './profile/profile.module';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { AdminComponent } from './admin/admin.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, AdminComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
