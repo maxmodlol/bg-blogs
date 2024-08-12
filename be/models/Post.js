@@ -1,5 +1,18 @@
 const mongoose = require("mongoose");
 
+const ReactionSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  type: {
+    type: String,
+    enum: ["like", "love", "haha", "sad", "angry"],
+    required: true,
+  },
+});
+
 const CommentSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -14,6 +27,7 @@ const CommentSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  reactions: [ReactionSchema],
   replies: [
     {
       user: {
@@ -28,6 +42,7 @@ const CommentSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
       },
+      reactions: [ReactionSchema],
     },
   ],
 });
@@ -50,6 +65,7 @@ const PostSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  reactions: [ReactionSchema],
   comments: [CommentSchema],
 });
 

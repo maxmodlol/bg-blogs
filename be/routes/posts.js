@@ -80,6 +80,102 @@ router.get("/:id", async (req, res, next) => {
     next(err);
   }
 });
+// @route   POST /api/posts/:id/reactions
+// @desc    Add a reaction to a post
+// @access  Private
+router.post(
+  "/:id/reactions",
+  [
+    auth,
+    [
+      check("type", "Reaction type is required").isIn([
+        "like",
+        "love",
+        "haha",
+        "sad",
+        "angry",
+      ]),
+    ],
+  ],
+  async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return errorResponse(res, errors.array(), 400);
+    }
+
+    try {
+      const post = await Post.findById(req.params.id);
+
+      if (!post) {
+        return errorResponse(res, "Post not found", 404);
+      }
+
+      // Check if user has already reacted
+      const existingReaction = post.reactions.find(
+        (reaction) => reaction.user.toString() === req.user.id
+      );
+
+      if (existingReaction) {
+        // Update the existing reaction type
+        existingReaction.type = req.body.type;
+      } else {
+        // Add new reaction
+        const newReaction = {
+          user: req.user.id,
+          type: req.body.type,
+        };
+        post.reactions.push(newReaction);
+      }
+
+      await post.save();
+
+      return successResponse(
+        res,
+        post.reactions,
+        "Reaction added/updated successfully"
+      );
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+// @route   DELETE /api/posts/:postId/reactions/:reactionId
+// @desc    Remove a reaction from a post
+// @access  Private
+router.delete(
+  "/:postId/reactions/:reactionId",
+  auth,
+  async (req, res, next) => {
+    try {
+      const post = await Post.findById(req.params.postId);
+
+      if (!post) {
+        return errorResponse(res, "Post not found", 404);
+      }
+
+      const reaction = post.reactions.id(req.params.reactionId);
+
+      if (!reaction) {
+        return errorResponse(res, "Reaction not found", 404);
+      }
+
+      if (reaction.user.toString() !== req.user.id) {
+        return errorResponse(res, "User not authorized", 401);
+      }
+
+      reaction.remove();
+      await post.save();
+
+      return successResponse(
+        res,
+        post.reactions,
+        "Reaction removed successfully"
+      );
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 // @route   DELETE /api/posts/:id
 // @desc    Delete a post
@@ -136,6 +232,114 @@ router.post(
       await post.save();
 
       return successResponse(res, post.comments, "Comment added successfully");
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+// @route   POST /api/posts/:postId/comments/:commentId/reactions
+// @desc    Add a reaction to a comment
+// @access  Private
+router.post(
+  "/:postId/comments/:commentId/reactions",
+  [
+    auth,
+    [
+      check("type", "Reaction type is required").isIn([
+        "like",
+        "love",
+        "haha",
+        "sad",
+        "angry",
+      ]),
+    ],
+  ],
+  async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return errorResponse(res, errors.array(), 400);
+    }
+
+    try {
+      const post = await Post.findById(req.params.postId);
+
+      if (!post) {
+        return errorResponse(res, "Post not found", 404);
+      }
+
+      const comment = post.comments.id(req.params.commentId);
+
+      if (!comment) {
+        return errorResponse(res, "Comment not found", 404);
+      }
+
+      // Check if user has already reacted
+      const existingReaction = comment.reactions.find(
+        (reaction) => reaction.user.toString() === req.user.id
+      );
+
+      if (existingReaction) {
+        // Update the existing reaction type
+        existingReaction.type = req.body.type;
+      } else {
+        // Add new reaction
+        const newReaction = {
+          user: req.user.id,
+          type: req.body.type,
+        };
+        comment.reactions.push(newReaction);
+      }
+
+      await post.save();
+
+      return successResponse(
+        res,
+        comment.reactions,
+        "Reaction added/updated successfully"
+      );
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+// @route   DELETE /api/posts/:postId/comments/:commentId/reactions/:reactionId
+// @desc    Remove a reaction from a comment
+// @access  Private
+router.delete(
+  "/:postId/comments/:commentId/reactions/:reactionId",
+  auth,
+  async (req, res, next) => {
+    try {
+      const post = await Post.findById(req.params.postId);
+
+      if (!post) {
+        return errorResponse(res, "Post not found", 404);
+      }
+
+      const comment = post.comments.id(req.params.commentId);
+
+      if (!comment) {
+        return errorResponse(res, "Comment not found", 404);
+      }
+
+      const reaction = comment.reactions.id(req.params.reactionId);
+
+      if (!reaction) {
+        return errorResponse(res, "Reaction not found", 404);
+      }
+
+      if (reaction.user.toString() !== req.user.id) {
+        return errorResponse(res, "User not authorized", 401);
+      }
+
+      reaction.remove();
+      await post.save();
+
+      return successResponse(
+        res,
+        comment.reactions,
+        "Reaction removed successfully"
+      );
     } catch (err) {
       next(err);
     }
